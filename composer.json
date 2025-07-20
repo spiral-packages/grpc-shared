@@ -1,5 +1,5 @@
 {
-  "name": "internal/grpc-shared",
+  "name": "spiral-package/grpc-shared",
   "description": "Shared package for gRPC services with DTO",
   "license": "proprietary",
   "authors": [
