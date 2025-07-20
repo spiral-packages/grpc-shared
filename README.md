@@ -1,4 +1,4 @@
-# Generator
+# gRPC Shared package template
 
 > **⚠️ Important Notice**
 >
