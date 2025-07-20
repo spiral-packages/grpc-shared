@@ -29,6 +29,142 @@ creation and ensures consistency across all generated services.
 - **Message Fixer** - Post-processing component that enhances generated protobuf message classes
 - **Annotations Parser** - Component that extracts metadata from protobuf comments and converts to PHP attributes
 
+## 📋 Proto Messages Naming Conventions
+
+To ensure consistent and predictable code generation, follow these naming conventions for your proto files:
+
+### Service Naming
+
+- **Services**: Use `PascalCase` with descriptive names ending in `Service`
+
+```protobuf
+service UserService {
+  rpc CreateUser(CreateUserRequest) returns (CreateUserResponse);
+  rpc GetUser(GetUserRequest) returns (GetUserResponse);
+}
+```
+
+### Message Naming
+
+- **Request messages**: Use `PascalCase` ending with `Request`
+
+```protobuf
+message CreateUserRequest {
+  string email = 1;
+  string name = 2;
+  optional int32 age = 3;
+}
+```
+
+- **Response messages**: Use `PascalCase` ending with `Response`
+
+```protobuf
+message CreateUserResponse {
+  int64 user_id = 1;
+  string status = 2;
+}
+```
+
+- **Data transfer objects**: Use `PascalCase` with descriptive names
+
+```protobuf
+message UserProfile {
+  string email = 1;
+  string display_name = 2;
+  repeated string roles = 3;
+}
+```
+
+### Field Naming
+
+- **Field names**: Use `snake_case` for all message fields
+
+```protobuf
+message UserProfile {
+  string first_name = 1;        // ✅ Correct
+  string last_name = 2;         // ✅ Correct  
+  string display_name = 3;      // ✅ Correct
+  // string firstName = 4;      // ❌ Avoid camelCase
+  // string DisplayName = 5;    // ❌ Avoid PascalCase
+}
+```
+
+### Enum Naming
+
+- **Enum types**: Use `PascalCase` with descriptive names
+- **Enum values**: Use `SCREAMING_SNAKE_CASE` with enum name prefix
+
+```protobuf
+enum UserStatus {
+  USER_STATUS_UNKNOWN = 0;      // ✅ Always include zero value
+  USER_STATUS_ACTIVE = 1;
+  USER_STATUS_INACTIVE = 2;
+  USER_STATUS_SUSPENDED = 3;
+}
+```
+
+### Generated PHP Class Mapping
+
+The generator transforms proto names to PHP classes following these patterns:
+
+| Proto Element    | Example Proto        | Generated PHP Class                                     |
+|------------------|----------------------|---------------------------------------------------------|
+| Service          | `UserService`        | `UserServiceClient` (implements `UserServiceInterface`) |
+| Request Message  | `CreateUserRequest`  | `CreateUserCommand` (in `Command\\` namespace)          |
+| Response Message | `CreateUserResponse` | `CreateUserResponse` (in `Command\\` namespace)         |
+| Data Message     | `UserProfile`        | `UserProfile` (in `Command\\` namespace)                |
+| Enum             | `UserStatus`         | `UserStatus` (PHP 8.1+ backed enum)                     |
+
+### Field Type Conversions
+
+Proto field types are converted to appropriate PHP types:
+
+| Proto Type                  | PHP Type              | Notes                 |
+|-----------------------------|-----------------------|-----------------------|
+| `string`                    | `string`              |                       |
+| `int32`, `int64`            | `int`                 |                       |
+| `float`, `double`           | `float`               |                       |
+| `bool`                      | `bool`                |                       |
+| `bytes`                     | `string`              | Binary data as string |
+| `google.protobuf.Timestamp` | `\\DateTimeInterface` | Automatic conversion  |
+| `google.protobuf.Duration`  | `\\DateInterval`      | Automatic conversion  |
+| `repeated T`                | `array<T>`            | PHP array of type T   |
+| `optional T`                | `T\\|null`            | Nullable PHP type     |
+
+### Security Annotations
+
+Mark sensitive operations with security annotations:
+
+```protobuf
+// @Guarded - Requires authentication
+// @Internal - Internal use only
+service AdminUserService {
+  // @Guarded 
+  rpc DeleteUser(DeleteUserRequest) returns (DeleteUserResponse);
+
+  // @Internal
+  rpc SyncUserData(SyncUserDataRequest) returns (SyncUserDataResponse);
+}
+```
+
+### File Organization Best Practices
+
+Organize proto files in a clear hierarchy:
+
+```
+proto/
+├── user/v1/
+│   ├── user_service.proto      # Service definitions
+│   ├── user_messages.proto     # Request/response messages  
+│   └── user_types.proto        # Common data types
+├── payment/v1/
+│   ├── payment_service.proto
+│   └── payment_messages.proto
+└── common/
+    ├── errors.proto            # Common error types
+    └── pagination.proto        # Shared pagination types
+```
+
 ## 🚀 Quick Start Workflow
 
 Before starting, ensure you have:
@@ -135,20 +271,23 @@ composer show your-company/proto-files
 ### 4.1 Execute Generator
 
 ```bash
-# Basic generation
-php console.php generate --proto vendor/your-company/proto-files/proto
+# Single proto directory
+php bin/console generate --proto-path /path/to/proto/files
 
-# With verbose output to see detailed progress
-php console.php generate  --proto vendor/your-company/proto-files/proto -v
+# Multiple proto directories  
+php bin/console generate --proto-path /path/to/proto1 --proto-path /path/to/proto2
+
+# Short option
+php bin/console generate -p /path/to/proto/files
 
 # Example output:
 # Compiling `user/v1`:
 # • src/Services/User/v1/UserServiceInterface.php
 # • src/Services/User/v1/CreateUserRequest.php
 # • src/Services/User/v1/GetUserResponse.php
-# Running `Generator\Generators\ConfigGenerator`:
-# Running `Generator\Generators\ServiceClientGenerator`:
-# Running `Generator\Generators\CommandClassGenerator`:
+# Running `Generator\\Generators\\ConfigGenerator`:
+# Running `Generator\\Generators\\ServiceClientGenerator`:
+# Running `Generator\\Generators\\CommandClassGenerator`:
 # Done!
 ```
 
@@ -204,7 +343,7 @@ git commit -m "Generate service clients for proto-files v1.2.0
 - Updated PaymentService with refund support
 - Regenerated all handlers and mappers
 
-Proto files version: your-company/proto-files@v1.2.0"
+Proto files version: your-company/proto-files@v1.2.0\"
 
 # Push changes
 git push origin main
@@ -240,12 +379,12 @@ services:
   user-service:
     image: your-company/user-service:latest
     ports:
-      - "9000:9000"
+      - \"9000:9000\"
 
   payment-service:
     image: your-company/payment-service:latest
     ports:
-      - "9001:9001"
+      - \"9001:9001\"
 ```
 
 ### 7.1 Basic Usage Example
@@ -253,9 +392,9 @@ services:
 ```php
 <?php
 
-use Internal\Shared\gRPC\Services\User\v1\UserServiceClient;
-use Internal\Shared\gRPC\Command\User\v1\CreateUserCommand;
-use Internal\Shared\gRPC\RequestContext;
+use Internal\\Shared\\gRPC\\Services\\User\\v1\\UserServiceClient;
+use Internal\\Shared\\gRPC\\Command\\User\\v1\\CreateUserCommand;
+use Internal\\Shared\\gRPC\\RequestContext;
 
 class UserController
 {
