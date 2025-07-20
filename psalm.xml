@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+<psalm
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns="https://getpsalm.org/schema/config"
+        xsi:schemaLocation="https://getpsalm.org/schema/config vendor/vimeo/psalm/config.xsd"
+        errorLevel="4"
+        resolveFromConfigFile="true"
+        findUnusedBaselineEntry="false"
+        findUnusedCode="false"
+>
+    <projectFiles>
+        <directory name="src"/>
+        <ignoreFiles>
+            <directory name="vendor"/>
+        </ignoreFiles>
+    </projectFiles>
+    <forbiddenFunctions>
+        <function name="var_dump"/>
+        <function name="dd"/>
+        <function name="dump"/>
+        <function name="trap"/>
+    </forbiddenFunctions>
+    <issueHandlers>
+    </issueHandlers>
+</psalm>

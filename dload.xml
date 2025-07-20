@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dload xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/php-internal/dload/refs/heads/1.x/dload.xsd"
+       temp-dir="./runtime">
+    <registry overwrite="false">
+    </registry>
+    <actions>
+        <download software="protoc-gen-php-grpc"/>
+    </actions>
+</dload>

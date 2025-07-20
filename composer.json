@@ -1,0 +1,73 @@
+{
+  "name": "internal/grpc-shared",
+  "description": "Shared package for gRPC services with DTO",
+  "license": "proprietary",
+  "authors": [
+    {
+      "name": "Pavel Buchnev",
+      "email": "butschster@gmail.com"
+    }
+  ],
+  "require": {
+    "php": "^8.2",
+    "ext-grpc": "*",
+    "ext-protobuf": "*",
+    "cuyz/valinor": "1.7.0",
+    "grpc/grpc": "^1.52",
+    "internal/dload": "^1.4",
+    "ramsey/uuid": "^4.7",
+    "spiral/auth": "^3.15",
+    "spiral/cache": "^3.15",
+    "spiral/core": "^3.15",
+    "spiral/data-grid": "^3.0",
+    "spiral/data-grid-bridge": "^3.0",
+    "spiral/debug": "^3.15",
+    "spiral/hmvc": "^3.15",
+    "spiral/pagination": "^3.15",
+    "spiral/roadrunner-grpc": "^3.0",
+    "spiral/telemetry": "^3.15",
+    "spiral-packages/cqrs": "^2.0"
+  },
+  "require-dev": {
+    "buggregator/trap": "^1.4",
+    "doctrine/annotations": "^2.0",
+    "mockery/mockery": "^1.6",
+    "phpstan/phpdoc-parser": "^1.0",
+    "phpunit/phpunit": "^10.2",
+    "spiral/boot": "^3.7",
+    "spiral/code-style": "^2.2",
+    "spiral/config": "^3.7",
+    "spiral/files": "^3.7",
+    "spiral/reactor": "^3.7",
+    "spiral/roadrunner-cli": "^2.5",
+    "symfony/console": "^6.3",
+    "rector/rector": "^2.0",
+    "vimeo/psalm": "^5.23"
+  },
+  "autoload": {
+    "psr-4": {
+      "Internal\\Shared\\gRPC\\": [
+        "src",
+        "generated"
+      ]
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Generator\\": "generator/src"
+    }
+  },
+  "scripts": {
+    "cs:fix": "php-cs-fixer fix -v",
+    "psalm": "vendor/bin/psalm --config=psalm.xml",
+    "generate": "php generator/bin/console generate",
+    "refactor": "rector process --config=rector.php",
+    "download": "vendor/bin/dload get"
+  },
+  "config": {
+    "secure-http": false,
+    "sort-packages": true
+  },
+  "minimum-stability": "dev",
+  "prefer-stable": true
+}

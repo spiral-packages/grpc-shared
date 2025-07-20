@@ -1,0 +1,20 @@
+$schema: 'https://raw.githubusercontent.com/context-hub/generator/refs/heads/main/json-schema.json'
+
+import:
+  - type: url
+    url: https://gist.githubusercontent.com/butschster/29e84fb9c976ac837181141f88049a35/raw/d5408d454e4921fcf4ee9375b7feb44a5dd2e94a/01-dev-prompts.yaml
+
+documents:
+  - description: 'Project structure overview'
+    outputPath: project-structure.md
+    sources:
+      - type: tree
+        sourcePaths:
+          - generator/src
+
+  - description: Generator
+    outputPath: generator.md
+    sources:
+      - type: file
+        sourcePaths:
+          - generator/src
