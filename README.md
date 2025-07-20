@@ -1,11 +1,73 @@
 # Generator
 
+> **⚠️ Important Notice**
+>
+> This repository is an **example implementation** of a PHP gRPC code generation tool. It is **not intended to be used
+directly as a Composer package**.
+>
+> **To use this generator:**
+> 1. **Fork this repository** to your own GitHub account or organization
+> 2. **Customize the code** according to your specific requirements (namespaces, directory structures, etc.)
+> 3. **Follow the setup instructions** below to configure it for your project
+> 4. **Maintain your own version** with your specific business logic and requirements
+>
+> This example demonstrates the concepts and patterns for building gRPC service generators, but you'll need to adapt it
+> to your own infrastructure and conventions.
+
 ## 🧭 Purpose of the Component
 
 The Generator component is a powerful PHP code generation tool that automatically creates client-side code from Protocol
 Buffer (protobuf) service definitions. It transforms gRPC service interfaces into fully functional PHP classes,
 commands, handlers, mappers, and configuration files. This component eliminates the need for manual boilerplate code
 creation and ensures consistency across all generated services.
+
+## 🚀 Getting Started with Your Fork
+
+### Step 1: Fork and Customize
+
+1. **Fork this repository** to your GitHub account/organization
+2. **Clone your fork** locally:
+   ```bash
+   git clone https://github.com/YOUR-USERNAME/YOUR-FORKED-REPO.git
+   cd YOUR-FORKED-REPO
+   ```
+
+3. **Customize the generator** for your needs:
+
+- Adjust file paths and directory structures
+- Update service client generation logic
+- Customize validation rules and annotations
+
+### Step 2: Set Up Your Project Structure
+
+Update your main project's `composer.json` to include your forked generator:
+
+```json
+{
+  "require-dev": {
+    "your-company/grpc-generator": "dev-main"
+  },
+  "repositories": [
+    {
+      "type": "vcs",
+      "url": "https://github.com/YOUR-USERNAME/YOUR-FORKED-REPO"
+    }
+  ]
+}
+```
+
+### Step 3: Install and Configure
+
+```bash
+# Install your customized generator
+composer install
+
+# Download required protoc binary
+composer download
+
+# Create your console entry point if needed
+# (See console setup instructions below)
+```
 
 ## 🧍 List of Actors
 
@@ -171,6 +233,7 @@ Before starting, ensure you have:
 
 - PHP 8.3 or higher
 - Composer installed
+- Your forked and customized version of this generator
 - Access to your proto files repository
 
 ### 1.1 Create Proto Files Repository
@@ -211,7 +274,7 @@ Use semantic versioning for your proto files:
 - **Minor version** (1.1.0): New services or non-breaking additions
 - **Patch version** (1.0.1): Bug fixes or documentation updates
 
-### 2.1 Add Proto Files Dependency
+### 2.1 Add Dependencies
 
 In your main project's `composer.json`:
 
@@ -222,10 +285,17 @@ In your main project's `composer.json`:
     "spiral/framework": "^3.0",
     "grpc/grpc": "^1.50"
   },
+  "require-dev": {
+    "your-company/grpc-generator": "dev-main"
+  },
   "repositories": [
     {
       "type": "vcs",
       "url": "https://github.com/your-company/proto-files"
+    },
+    {
+      "type": "vcs",
+      "url": "https://github.com/your-company/your-forked-generator"
     }
   ]
 }
@@ -450,7 +520,7 @@ class UserRegistrationService
 The Generator component begins execution when the `GeneratorCommand` is invoked through the console interface:
 
 ```php
-php console.php generate
+php bin/console generate
 ```
 
 **Step 1.1: Binary Verification**
