@@ -21,6 +21,7 @@ use Spiral\Files\FilesInterface;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
 #[AsCommand(name: 'generate')]
@@ -28,14 +29,24 @@ final class GeneratorCommand extends Command
 {
     /**
      * @param non-empty-string $rootDir
-     * @param string[] $protoFileDirs
      */
     public function __construct(
         private readonly FilesInterface $files,
         private readonly string $rootDir,
-        private readonly array $protoFileDirs,
     ) {
         parent::__construct();
+    }
+
+    protected function configure(): void
+    {
+        $this
+            ->setDescription('Generate PHP gRPC classes from proto files')
+            ->addOption(
+                'proto',
+                'p',
+                InputOption::VALUE_REQUIRED | InputOption::VALUE_IS_ARRAY,
+                'Path to directory containing proto files (can be used multiple times)',
+            );
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int
@@ -43,7 +54,21 @@ final class GeneratorCommand extends Command
         $binaryPath = $this->rootDir . '/protoc-gen-php-grpc';
 
         if (!\file_exists($binaryPath)) {
-            $output->writeln('protoc-gen-php-grpc binary not found. Please, run "composer download" to download it.');
+            $output->writeln(
+                '<error>protoc-gen-php-grpc binary not found. Please, run "composer download" to download it.</error>',
+            );
+
+            return self::FAILURE;
+        }
+
+        /** @var string[] $protoFileDirs */
+        $protoFileDirs = $input->getOption('proto-path');
+
+        if (empty($protoFileDirs)) {
+            $output->writeln(
+                '<error>No proto-path specified. Use --proto-path option to specify directories containing proto files.</error>',
+            );
+            $output->writeln('<info>Example: php console generate --proto-path /path/to/proto/files</info>');
 
             return self::FAILURE;
         }
@@ -60,7 +85,7 @@ final class GeneratorCommand extends Command
         );
 
         $compiled = [];
-        foreach ($this->protoFileDirs as $dir) {
+        foreach ($protoFileDirs as $dir) {
             if (!\is_dir($dir)) {
                 $output->writeln("<error>Proto files dir `$dir` not found.</error>");
                 continue;
