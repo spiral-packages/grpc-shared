@@ -8,21 +8,10 @@ use Symfony\Component\Console\Application;
 
 $application = new Application();
 
-/** @var \SplFileInfo[] $dirs */
-$dirs = new DirectoryIterator(__DIR__ . '/../../vendor/internal/proto-files');
-
-$protoDirs = [];
-foreach ($dirs as $fileInfo) {
-    if ($fileInfo->isDir() && !\str_starts_with($fileInfo->getFilename(), '.')) {
-        $protoDirs[] = $fileInfo->getPathname();
-    }
-}
-
 $application->add(
     new GeneratorCommand(
         files: new \Spiral\Files\Files(),
         rootDir: __DIR__ . '/../../',
-        protoFileDirs: $protoDirs,
     ),
 );
 

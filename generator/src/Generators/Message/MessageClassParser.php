@@ -24,6 +24,8 @@ final readonly class MessageClassParser
         $reflection = new \ReflectionClass($class);
 
         if (!$reflection->isSubclassOf(Message::class)) {
+            //Не может сгенерировать метадату и сервис, просто подавить не выйдет.
+            //Видимо для них нет соответствующего генератора
             throw new \InvalidArgumentException(\sprintf('Class %s is not a subclass of %s', $class, Message::class));
         }
 

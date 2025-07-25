@@ -184,7 +184,7 @@ final class CommandClassGenerator implements GeneratorInterface
                                 $this->container->get(RequestContext::class),
                                 $this->mapper->toMessage($request)
                             );
-                            
+
                             return $this->mapper->fromMessage($response);
                             PHP,
                         $method->getName(),

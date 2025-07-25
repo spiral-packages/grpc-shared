@@ -47,8 +47,10 @@
   "autoload": {
     "psr-4": {
       "Internal\\Shared\\gRPC\\": [
-        "src",
-        "generated"
+        "src"
+      ],
+      "Yclients\\": [
+        "generated/Yclients"
       ]
     }
   },

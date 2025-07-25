@@ -42,7 +42,7 @@ final class GeneratorCommand extends Command
         $this
             ->setDescription('Generate PHP gRPC classes from proto files')
             ->addOption(
-                'proto',
+                'proto-path',
                 'p',
                 InputOption::VALUE_REQUIRED | InputOption::VALUE_IS_ARRAY,
                 'Path to directory containing proto files (can be used multiple times)',
@@ -51,7 +51,7 @@ final class GeneratorCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $binaryPath = $this->rootDir . '/protoc-gen-php-grpc';
+        $binaryPath = '/usr/bin/protoc-gen-php-grpc';
 
         if (!\file_exists($binaryPath)) {
             $output->writeln(

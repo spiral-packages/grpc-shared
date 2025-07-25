@@ -40,9 +40,7 @@ RUN mkdir /build && cd /build \
     && cp /build/grpc/cmake/build/third_party/protobuf/protoc /usr/bin \
     && chmod +x /usr/bin/protoc-gen-php-grpc \
     && chmod +x /usr/bin/grpc_php_plugin \
-    && chmod +x /usr/bin/protoc \
-    # Очистка
-    && rm -rf /build
+    && chmod +x /usr/bin/protoc
 
 RUN pecl install grpc
 RUN docker-php-ext-enable grpc
@@ -54,4 +52,5 @@ RUN composer install --optimize-autoloader --no-interaction --no-scripts --ignor
 RUN composer download
 
 RUN apk del --purge .build-deps && \
-    && pecl clear-cache
+    pecl clear-cache && \
+    rm -rf /build

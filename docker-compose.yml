@@ -1,0 +1,7 @@
+services:
+  php:
+    platform: linux/amd64
+    build:
+      context: .
+    volumes:
+      - ./:/var/www/html

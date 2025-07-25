@@ -1,0 +1,32 @@
+syntax = "proto3";
+
+package staff_availability;
+
+option php_namespace = "Yclients\\Grpc\\StaffAvailability\\Proto";
+option php_metadata_namespace = "Yclients\\Grpc\\StaffAvailability\\GPBMetadata";
+
+message StaffAvailabilityTimeslotsRequest {
+    repeated string staffUuids = 1;
+    string dateFrom = 2;
+    optional string dateTo = 3;
+}
+
+message TimeslotDto {
+    string timezone = 1;
+    uint64 fromTimestamp = 2;
+    uint64 toTimestamp = 3;
+}
+
+message StaffWithTimeslots {
+    string staffUuid = 1;
+    repeated TimeslotDto timeslots = 2;
+}
+
+message StaffAvailabilityTimeslotsResponse {
+    repeated StaffWithTimeslots staffWithTimeslots = 1;
+}
+
+service StaffAvailabilityProvider {
+    rpc getTimeslots (StaffAvailabilityTimeslotsRequest) returns (StaffAvailabilityTimeslotsResponse) {
+    }
+}
